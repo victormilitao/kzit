@@ -32,13 +32,9 @@ export const entryController = {
         return;
       }
 
-      const responsavel = req.body.responsavel;
-      if (!responsavel || typeof responsavel !== 'string' || responsavel.trim().length === 0) {
-        res.status(400).json({ success: false, error: 'Campo "responsavel" é obrigatório' });
-        return;
-      }
+      const responsavel = typeof req.body.responsavel === 'string' ? req.body.responsavel.trim() : '';
 
-      const result = await entryService.importFromSpreadsheet(req.file.buffer, responsavel.trim());
+      const result = await entryService.importFromSpreadsheet(req.file.buffer, responsavel, req.file.originalname);
       res.status(200).json({ success: true, data: result });
     } catch (error) {
       next(error);

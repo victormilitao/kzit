@@ -114,8 +114,8 @@
   },
   "importSpreadsheet": {
     "title": "📥 Importar Planilha",
-    "dropzone": "Arraste um arquivo CSV aqui ou clique para selecionar",
-    "acceptedFormats": "Formatos aceitos: .csv",
+    "dropzone": "Arraste um arquivo aqui ou clique para selecionar",
+    "acceptedFormats": "Formatos aceitos: .csv, .xlsx, .xls",
     "responsibleLabel": "Responsável pela importação",
     "responsiblePlaceholder": "Nome do responsável",
     "preview": "Pré-visualização",
@@ -129,6 +129,6 @@
     "errorRow": "Linha {row}",
     "importAnother": "Importar outro arquivo",
     "errorImporting": "Erro na importação",
-    "noFile": "Selecione um arquivo CSV"
+    "noFile": "Selecione um arquivo"
   }
 }

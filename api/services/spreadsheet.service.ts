@@ -1,8 +1,34 @@
 import { EntryType, EntryOrigin, EntryStatus } from '@prisma/client';
-import { spreadsheetRowSchema } from '../schemas/spreadsheet.schema';
+import * as XLSX from 'xlsx';
 import { CreateEntryInput, SpreadsheetImportResult } from '../types';
 
 export const spreadsheetService = {
+  parseFile(buffer: Buffer, filename: string): string[][] {
+    const ext = filename.toLowerCase().split('.').pop();
+
+    if (ext === 'xlsx' || ext === 'xls') {
+      return this.parseXLSX(buffer);
+    }
+    return this.parseCSV(buffer);
+  },
+
+  parseXLSX(buffer: Buffer): string[][] {
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // Convert sheet to array of arrays, all as strings
+    const rawData: (string | number | boolean | null)[][] = XLSX.utils.sheet_to_json(sheet, {
+      header: 1,
+      defval: '',
+      raw: false,
+    });
+
+    // Skip header (first row) and convert all cells to strings
+    const dataRows = rawData.slice(1);
+    return dataRows.map((row) => row.map((cell) => String(cell ?? '').trim()));
+  },
+
   parseCSV(buffer: Buffer): string[][] {
     const content = buffer.toString('utf-8').trim();
     const lines = content.split(/\r?\n/);
@@ -74,7 +100,7 @@ export const spreadsheetService = {
       const tipo: EntryType = rawTipo === 'receita' ? 'RECEITA' : 'DESPESA';
 
       // Apply value sign rule
-      const finalValor = rawTipo === 'despesa' ? Math.abs(valor) : Math.abs(valor);
+      const finalValor = Math.abs(valor);
 
       // Determine status based on business rules
       let entryStatus: EntryStatus = 'PENDENTE';

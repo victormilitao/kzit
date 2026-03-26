@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
+import * as XLSX from 'xlsx';
 
 interface ImportResult {
   totalRows: number;
@@ -14,6 +15,18 @@ interface ImportSpreadsheetModalProps {
   open: boolean;
   onClose: () => void;
   onImported: () => void;
+}
+
+const ACCEPTED_EXTENSIONS = ['.csv', '.xlsx', '.xls'];
+const ACCEPTED_MIMES = [
+  'text/csv',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+];
+
+function isAcceptedFile(f: File): boolean {
+  const ext = f.name.toLowerCase().slice(f.name.lastIndexOf('.'));
+  return ACCEPTED_EXTENSIONS.includes(ext) || ACCEPTED_MIMES.includes(f.type);
 }
 
 export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpreadsheetModalProps) {
@@ -31,7 +44,7 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
 
   if (!open) return null;
 
-  const parsePreview = (text: string) => {
+  const parseCSVPreview = (text: string): string[][] => {
     const lines = text.trim().split(/\r?\n/).slice(0, 6); // header + 5 rows
     let separator = '|';
     if (lines[0]?.includes('|')) separator = '|';
@@ -41,24 +54,50 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
     return lines.map((line) => line.split(separator).map((c) => c.trim()));
   };
 
+  const parseXLSXPreview = (buffer: ArrayBuffer): string[][] => {
+    const workbook = XLSX.read(buffer, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    const rawData: (string | number | boolean | null)[][] = XLSX.utils.sheet_to_json(sheet, {
+      header: 1,
+      defval: '',
+      raw: false,
+    });
+
+    // Return header + first 5 rows for preview
+    return rawData.slice(0, 6).map((row) => row.map((cell) => String(cell ?? '').trim()));
+  };
+
   const handleFile = (f: File) => {
     setFile(f);
     setError('');
     setResult(null);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
-      setPreview(parsePreview(text));
-    };
-    reader.readAsText(f);
+    const ext = f.name.toLowerCase().slice(f.name.lastIndexOf('.'));
+
+    if (ext === '.xlsx' || ext === '.xls') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = e.target?.result as ArrayBuffer;
+        setPreview(parseXLSXPreview(buffer));
+      };
+      reader.readAsArrayBuffer(f);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        setPreview(parseCSVPreview(text));
+      };
+      reader.readAsText(f);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
-    if (f && (f.name.endsWith('.csv') || f.type === 'text/csv')) {
+    if (f && isAcceptedFile(f)) {
       handleFile(f);
     }
   };
@@ -75,10 +114,6 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
   const handleImport = async () => {
     if (!file) {
       setError(t('noFile'));
-      return;
-    }
-    if (!responsavel.trim()) {
-      setError(t('responsibleLabel') + ' é obrigatório');
       return;
     }
 
@@ -165,7 +200,7 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".csv"
+                  accept=".csv,.xlsx,.xls"
                   style={{ display: 'none' }}
                   onChange={(e) => {
                     const f = e.target.files?.[0];

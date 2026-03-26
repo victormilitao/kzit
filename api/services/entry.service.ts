@@ -41,9 +41,10 @@ export const entryService = {
 
   async importFromSpreadsheet(
     buffer: Buffer,
-    responsavel: string
+    responsavel: string,
+    filename: string
   ): Promise<SpreadsheetImportResult> {
-    const rows = spreadsheetService.parseCSV(buffer);
+    const rows = spreadsheetService.parseFile(buffer, filename);
     const { entries, result } = spreadsheetService.processRows(rows, responsavel);
 
     if (entries.length > 0) {

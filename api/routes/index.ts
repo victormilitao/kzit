@@ -6,21 +6,25 @@ import { messageController } from '../controllers/message.controller';
 
 const router = Router();
 
-// Multer config: aceita .txt e .csv, memória (buffer)
+// Multer config: aceita .txt, .csv, .xlsx e .xls, memória (buffer)
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
   fileFilter: (_req, file, cb) => {
-    if (
-      file.mimetype === 'text/plain' ||
-      file.mimetype === 'text/csv' ||
-      file.mimetype === 'application/vnd.ms-excel' ||
-      file.originalname.endsWith('.txt') ||
-      file.originalname.endsWith('.csv')
-    ) {
+    const allowedMimes = [
+      'text/plain',
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ];
+    const allowedExtensions = ['.txt', '.csv', '.xlsx', '.xls'];
+    const hasValidMime = allowedMimes.includes(file.mimetype);
+    const hasValidExt = allowedExtensions.some((ext) => file.originalname.toLowerCase().endsWith(ext));
+
+    if (hasValidMime || hasValidExt) {
       cb(null, true);
     } else {
-      cb(new Error('Apenas arquivos .txt e .csv são aceitos'));
+      cb(new Error('Apenas arquivos .txt, .csv, .xlsx e .xls são aceitos'));
     }
   },
 });
