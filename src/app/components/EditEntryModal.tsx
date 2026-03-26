@@ -27,6 +27,7 @@ const TIPOS = [
   { value: 'RECEITA', label: 'Receita' },
   { value: 'ESTORNO', label: 'Estorno' },
   { value: 'SALDO_ANTERIOR', label: 'Saldo Anterior' },
+  { value: 'DESCONHECIDO', label: 'Desconhecido' },
 ];
 
 const FORMAS_PAGAMENTO = [
