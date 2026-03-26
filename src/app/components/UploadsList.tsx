@@ -1,0 +1,59 @@
+'use client';
+
+import { useState } from 'react';
+import { formatDate } from '../utils';
+
+interface Upload {
+  id: string;
+  filename: string;
+  totalMessages: number;
+  processedMessages: number;
+  status: string;
+  createdAt: string;
+}
+
+interface UploadsListProps {
+  uploads: Upload[];
+}
+
+export function UploadsList({ uploads }: UploadsListProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (!uploads.length) {
+    return (
+      <div className="empty-state">
+        <span className="es-icon">📁</span>
+        <p>Nenhum upload ainda. Arraste um arquivo .txt acima.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="uploads-section">
+      <button
+        className="uploads-toggle"
+        onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+      >
+        <span>📁 {uploads.length} arquivo{uploads.length !== 1 ? 's' : ''} enviado{uploads.length !== 1 ? 's' : ''}</span>
+        <span className={`toggle-icon ${expanded ? 'open' : ''}`}>▸</span>
+      </button>
+
+      {expanded && (
+        <div className="uploads-list">
+          {uploads.map((u) => (
+            <div key={u.id} className="upload-item">
+              <div className="info">
+                <span className="filename">📄 {u.filename}</span>
+                <span className="meta">
+                  {u.processedMessages}/{u.totalMessages} mensagens • {formatDate(u.createdAt)}
+                </span>
+              </div>
+              <span className={`status-badge status-${u.status}`}>{u.status}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

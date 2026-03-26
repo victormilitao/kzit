@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UploadStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum MessageStatus {
+  PENDING
+  PROCESSED
+  IGNORED
+  FAILED
+}
+
+enum EntryType {
+  VENDA
+  DESPESA
+  RECEITA
+  ESTORNO
+  SALDO_ANTERIOR
+  DESCONHECIDO
+}
+
+enum EntryOrigin {
+  WHATSAPP
+  PLANILHA
+  FORM
+}
+
+enum EntryStatus {
+  PENDENTE
+  PAGO
+  ATRASADO
+}
+
+model Upload {
+  id                String       @id @default(uuid())
+  filename          String
+  totalMessages     Int          @default(0) @map("total_messages")
+  processedMessages Int          @default(0) @map("processed_messages")
+  status            UploadStatus @default(PENDING)
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+
+  messages Message[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("uploads")
+}
+
+model Message {
+  id         String        @id @default(uuid())
+  uploadId   String        @map("upload_id")
+  senderName String        @map("sender_name")
+  text       String
+  timestamp  DateTime
+  status     MessageStatus @default(PENDING)
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  upload Upload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  entry  Entry?
+
+  @@unique([senderName, text, timestamp], name: "unique_message")
+  @@index([uploadId])
+  @@index([status])
+  @@index([timestamp])
+  @@map("messages")
+}
+
+model Entry {
+  id             String       @id @default(uuid())
+  messageId      String?      @unique @map("message_id")
+  tipo           EntryType
+  origin         EntryOrigin  @default(WHATSAPP)
+  categoria      String?
+  cliente        String?
+  produto        String?
+  descricao      String?
+  valor          Decimal?     @db.Decimal(10, 2)
+  parcelas       Int?
+  formaPagamento String?      @map("forma_pagamento")
+  observacoes    String?
+  confianca      Float        @default(0)
+  responsavel    String
+  needsReview    Boolean      @default(false) @map("needs_review")
+  reviewReason   String?      @map("review_reason")
+  dataVencimento DateTime?    @map("data_vencimento")
+  dataPagamento  DateTime?    @map("data_pagamento")
+  entryStatus    EntryStatus  @default(PENDENTE) @map("entry_status")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  message Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([tipo])
+  @@index([origin])
+  @@index([entryStatus])
+  @@index([needsReview])
+  @@index([createdAt])
+  @@index([responsavel])
+  @@map("entries")
+}
