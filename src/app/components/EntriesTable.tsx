@@ -6,6 +6,7 @@ import { formatCurrency, formatDate } from '../utils';
 import { EditEntryModal } from './EditEntryModal';
 import { CreateEntryModal } from './CreateEntryModal';
 import { DeleteEntryModal } from './DeleteEntryModal';
+import { FormField } from './FormField';
 
 interface EntryMessage {
   text: string;
@@ -120,7 +121,11 @@ export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated }: E
       </div>
 
       <div className="filters">
-        <select value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)}>
+        <FormField
+          as="select"
+          label={t('type')}
+          selectProps={{ value: filterTipo, onChange: (e) => setFilterTipo(e.target.value) }}
+        >
           <option value="">{t('allTypes')}</option>
           <option value="VENDA">{t('sales')}</option>
           <option value="DESPESA">{t('expenses')}</option>
@@ -128,18 +133,25 @@ export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated }: E
           <option value="ESTORNO">{t('chargebacks')}</option>
           <option value="SALDO_ANTERIOR">{t('previousBalance')}</option>
           <option value="DESCONHECIDO">{t('unknown')}</option>
-        </select>
-        <input
-          type="text"
-          placeholder={t('filterByResponsible')}
-          value={filterVendedora}
-          onChange={(e) => handleVendedoraChange(e.target.value)}
+        </FormField>
+        <FormField
+          label={t('responsible')}
+          inputProps={{
+            type: 'text',
+            placeholder: t('filterByResponsible'),
+            value: filterVendedora,
+            onChange: (e) => handleVendedoraChange(e.target.value),
+          }}
         />
-        <select value={filterReview} onChange={(e) => setFilterReview(e.target.value)}>
+        <FormField
+          as="select"
+          label="Revisão"
+          selectProps={{ value: filterReview, onChange: (e) => setFilterReview(e.target.value) }}
+        >
           <option value="">{t('reviewAll')}</option>
           <option value="true">{t('pendingReview')}</option>
           <option value="false">{t('reviewed')}</option>
-        </select>
+        </FormField>
       </div>
 
       <div className="table-wrapper">

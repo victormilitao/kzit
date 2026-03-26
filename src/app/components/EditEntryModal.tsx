@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { FormField } from './FormField';
 
 interface EditEntryData {
   id: string;
@@ -123,91 +124,99 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
 
         <div className="modal-body">
           <div className="form-row">
-            <div className="form-group">
-              <label>Tipo</label>
-              <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                {TIPOS.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Valor (R$)</label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0,00"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-              />
-            </div>
+            <FormField
+              as="select"
+              label="Tipo"
+              selectProps={{ value: tipo, onChange: (e) => setTipo(e.target.value) }}
+            >
+              {TIPOS.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </FormField>
+            <FormField
+              label="Valor (R$)"
+              inputProps={{
+                type: 'number',
+                step: '0.01',
+                min: '0',
+                placeholder: '0,00',
+                value: valor,
+                onChange: (e) => setValor(e.target.value),
+              }}
+            />
           </div>
 
-          <div className="form-group">
-            <label>Descrição</label>
-            <input
-              type="text"
-              placeholder="Descrição do lançamento"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
+          <FormField
+            label="Descrição"
+            inputProps={{
+              type: 'text',
+              placeholder: 'Descrição do lançamento',
+              value: descricao,
+              onChange: (e) => setDescricao(e.target.value),
+            }}
+          />
+
+          <div className="form-row">
+            <FormField
+              label="Cliente"
+              inputProps={{
+                type: 'text',
+                placeholder: 'Nome do cliente',
+                value: cliente,
+                onChange: (e) => setCliente(e.target.value),
+              }}
+            />
+            <FormField
+              label="Produto"
+              inputProps={{
+                type: 'text',
+                placeholder: 'Produto',
+                value: produto,
+                onChange: (e) => setProduto(e.target.value),
+              }}
             />
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label>Cliente</label>
-              <input
-                type="text"
-                placeholder="Nome do cliente"
-                value={cliente}
-                onChange={(e) => setCliente(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Produto</label>
-              <input
-                type="text"
-                placeholder="Produto"
-                value={produto}
-                onChange={(e) => setProduto(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group" style={{ flex: '0 0 calc(50% - 8px)' }}>
-              <label>Forma de Pagamento</label>
-              <select value={formaPagamento} onChange={(e) => {
-                setFormaPagamento(e.target.value);
-                if (e.target.value !== 'cartao_credito') setParcelas('');
-              }}>
-                {FORMAS_PAGAMENTO.map((f) => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
-                ))}
-              </select>
-            </div>
+            <FormField
+              as="select"
+              label="Forma de Pagamento"
+              style={{ flex: '0 0 calc(50% - 8px)' }}
+              selectProps={{
+                value: formaPagamento,
+                onChange: (e) => {
+                  setFormaPagamento(e.target.value);
+                  if (e.target.value !== 'cartao_credito') setParcelas('');
+                },
+              }}
+            >
+              {FORMAS_PAGAMENTO.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </FormField>
             {formaPagamento === 'cartao_credito' && (
-              <div className="form-group">
-                <label>Parcelas</label>
-                <select value={parcelas} onChange={(e) => setParcelas(e.target.value)}>
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={String(n)}>{n}x</option>
-                  ))}
-                </select>
-              </div>
+              <FormField
+                as="select"
+                label="Parcelas"
+                selectProps={{ value: parcelas, onChange: (e) => setParcelas(e.target.value) }}
+              >
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={String(n)}>{n}x</option>
+                ))}
+              </FormField>
             )}
           </div>
 
-          <div className="form-group">
-            <label>Observações</label>
-            <textarea
-              placeholder="Observações adicionais"
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              rows={2}
-            />
-          </div>
+          <FormField
+            as="textarea"
+            label="Observações"
+            textareaProps={{
+              placeholder: 'Observações adicionais',
+              value: observacoes,
+              onChange: (e) => setObservacoes(e.target.value),
+              rows: 2,
+            }}
+          />
         </div>
 
         <div className="modal-footer">

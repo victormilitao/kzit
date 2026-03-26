@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { FormField } from './FormField';
 
 interface CreateEntryModalProps {
   open: boolean;
@@ -131,141 +132,150 @@ export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalP
 
         <div className="modal-body">
           <div className="form-row">
-            <div className="form-group">
-              <label>{t('typeLabel')}</label>
-              <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                {TIPOS.map((tp) => (
-                  <option key={tp.value} value={tp.value}>{tp.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>{t('valueLabel')}</label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0,00"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>{t('responsibleLabel')}</label>
-            <input
-              type="text"
-              placeholder={t('responsiblePlaceholder')}
-              value={responsavel}
-              onChange={(e) => setResponsavel(e.target.value)}
+            <FormField
+              as="select"
+              label={t('typeLabel')}
+              selectProps={{ value: tipo, onChange: (e) => setTipo(e.target.value) }}
+            >
+              {TIPOS.map((tp) => (
+                <option key={tp.value} value={tp.value}>{tp.label}</option>
+              ))}
+            </FormField>
+            <FormField
+              label={t('valueLabel')}
+              inputProps={{
+                type: 'number',
+                step: '0.01',
+                min: '0',
+                placeholder: '0,00',
+                value: valor,
+                onChange: (e) => setValor(e.target.value),
+              }}
             />
           </div>
 
-          <div className="form-group">
-            <label>{t('descriptionLabel')}</label>
-            <input
-              type="text"
-              placeholder={t('descriptionPlaceholder')}
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
+          <FormField
+            label={t('responsibleLabel')}
+            inputProps={{
+              type: 'text',
+              placeholder: t('responsiblePlaceholder'),
+              value: responsavel,
+              onChange: (e) => setResponsavel(e.target.value),
+            }}
+          />
+
+          <FormField
+            label={t('descriptionLabel')}
+            inputProps={{
+              type: 'text',
+              placeholder: t('descriptionPlaceholder'),
+              value: descricao,
+              onChange: (e) => setDescricao(e.target.value),
+            }}
+          />
+
+          <div className="form-row">
+            <FormField
+              label={t('categoryLabel')}
+              inputProps={{
+                type: 'text',
+                placeholder: t('categoryPlaceholder'),
+                value: categoria,
+                onChange: (e) => setCategoria(e.target.value),
+              }}
             />
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label>{t('categoryLabel')}</label>
-              <input
-                type="text"
-                placeholder={t('categoryPlaceholder')}
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
-              />
-            </div>
+            <FormField
+              label={t('clientLabel')}
+              inputProps={{
+                type: 'text',
+                placeholder: t('clientPlaceholder'),
+                value: cliente,
+                onChange: (e) => setCliente(e.target.value),
+              }}
+            />
+            <FormField
+              label={t('productLabel')}
+              inputProps={{
+                type: 'text',
+                placeholder: t('productPlaceholder'),
+                value: produto,
+                onChange: (e) => setProduto(e.target.value),
+              }}
+            />
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label>{t('clientLabel')}</label>
-              <input
-                type="text"
-                placeholder={t('clientPlaceholder')}
-                value={cliente}
-                onChange={(e) => setCliente(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>{t('productLabel')}</label>
-              <input
-                type="text"
-                placeholder={t('productPlaceholder')}
-                value={produto}
-                onChange={(e) => setProduto(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group" style={{ flex: '0 0 calc(50% - 8px)' }}>
-              <label>{t('paymentMethodLabel')}</label>
-              <select value={formaPagamento} onChange={(e) => {
-                setFormaPagamento(e.target.value);
-                if (e.target.value !== 'cartao_credito') setParcelas('');
-              }}>
-                {FORMAS_PAGAMENTO.map((f) => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
-                ))}
-              </select>
-            </div>
+            <FormField
+              as="select"
+              label={t('paymentMethodLabel')}
+              style={{ flex: '0 0 calc(50% - 8px)' }}
+              selectProps={{
+                value: formaPagamento,
+                onChange: (e) => {
+                  setFormaPagamento(e.target.value);
+                  if (e.target.value !== 'cartao_credito') setParcelas('');
+                },
+              }}
+            >
+              {FORMAS_PAGAMENTO.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </FormField>
             {formaPagamento === 'cartao_credito' && (
-              <div className="form-group">
-                <label>{t('installmentsLabel')}</label>
-                <select value={parcelas} onChange={(e) => setParcelas(e.target.value)}>
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={String(n)}>{n}x</option>
-                  ))}
-                </select>
-              </div>
+              <FormField
+                as="select"
+                label={t('installmentsLabel')}
+                selectProps={{ value: parcelas, onChange: (e) => setParcelas(e.target.value) }}
+              >
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={String(n)}>{n}x</option>
+                ))}
+              </FormField>
             )}
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label>{t('dueDateLabel')}</label>
-              <input
-                type="date"
-                value={dataVencimento}
-                onChange={(e) => setDataVencimento(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>{t('paymentDateLabel')}</label>
-              <input
-                type="date"
-                value={dataPagamento}
-                onChange={(e) => setDataPagamento(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>{t('statusLabel')}</label>
-            <select value={entryStatus} onChange={(e) => setEntryStatus(e.target.value)}>
-              <option value="PENDENTE">{tStatus('PENDENTE')}</option>
-              <option value="PAGO">{tStatus('PAGO')}</option>
-              <option value="ATRASADO">{tStatus('ATRASADO')}</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>{t('observationsLabel')}</label>
-            <textarea
-              placeholder={t('observationsPlaceholder')}
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              rows={2}
+            <FormField
+              label={t('dueDateLabel')}
+              inputProps={{
+                type: 'date',
+                value: dataVencimento,
+                onChange: (e) => setDataVencimento(e.target.value),
+              }}
+            />
+            <FormField
+              label={t('paymentDateLabel')}
+              inputProps={{
+                type: 'date',
+                value: dataPagamento,
+                onChange: (e) => setDataPagamento(e.target.value),
+              }}
             />
           </div>
+
+          <FormField
+            as="select"
+            label={t('statusLabel')}
+            selectProps={{ value: entryStatus, onChange: (e) => setEntryStatus(e.target.value) }}
+          >
+            <option value="PENDENTE">{tStatus('PENDENTE')}</option>
+            <option value="PAGO">{tStatus('PAGO')}</option>
+            <option value="ATRASADO">{tStatus('ATRASADO')}</option>
+          </FormField>
+
+          <FormField
+            as="textarea"
+            label={t('observationsLabel')}
+            textareaProps={{
+              placeholder: t('observationsPlaceholder'),
+              value: observacoes,
+              onChange: (e) => setObservacoes(e.target.value),
+              rows: 2,
+            }}
+          />
         </div>
 
         <div className="modal-footer">

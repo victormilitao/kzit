@@ -16,7 +16,7 @@
     "title": "Kzit — Dashboard Financeiro",
     "financialSummary": "💰 Resumo Financeiro",
     "entries": "📋 Lançamentos",
-    "newEntry": "➕ Novo Lançamento",
+    "newEntry": "+ Novo Lançamento",
     "importSpreadsheet": "📥 Importar Planilha"
   },
   "entries": {

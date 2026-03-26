@@ -1,39 +1,39 @@
 :root {
-  /* Kzit Brand — Elegant, Earthy, Sophisticated */
-  --bg-primary: #FAFAFA;
-  --bg-secondary: #F5F3F0;
+  /* Kzit Brand — Clean, Modern, Avenue-inspired */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F7F8FA;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #F9F8F7;
-  --bg-dark: #2C2017;
-  --bg-dark-hover: #3D2E22;
-  --border: rgba(74, 55, 40, 0.1);
-  --border-strong: rgba(74, 55, 40, 0.18);
-  --text-primary: #2C2017;
-  --text-secondary: #6B5B4E;
-  --text-muted: #9C8E82;
-  --text-on-dark: #FAF8F5;
+  --bg-card-hover: #F9FAFB;
+  --bg-dark: #1B3726;
+  --bg-dark-hover: #254A33;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.15);
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --text-on-dark: #FFFFFF;
 
   /* Brand accents */
-  --accent-gold: #B89B6A;
-  --accent-gold-bg: rgba(184, 155, 106, 0.1);
-  --accent-terracotta: #C17A5A;
-  --accent-terracotta-bg: rgba(193, 122, 90, 0.08);
-  --accent-green: #5A8F6A;
-  --accent-green-bg: rgba(90, 143, 106, 0.1);
-  --accent-red: #B5564C;
-  --accent-red-bg: rgba(181, 86, 76, 0.08);
-  --accent-blue: #5A7B9F;
-  --accent-blue-bg: rgba(90, 123, 159, 0.08);
-  --accent-yellow: #C4963A;
-  --accent-yellow-bg: rgba(196, 150, 58, 0.08);
-  --accent-purple: #8B6B8F;
-  --accent-purple-bg: rgba(139, 107, 143, 0.08);
-  --accent-cyan: #5A8F8A;
-  --accent-cyan-bg: rgba(90, 143, 138, 0.08);
+  --accent-gold: #1B3726;
+  --accent-gold-bg: rgba(27, 55, 38, 0.08);
+  --accent-terracotta: #F59E0B;
+  --accent-terracotta-bg: rgba(245, 158, 11, 0.06);
+  --accent-green: #22C55E;
+  --accent-green-bg: rgba(34, 197, 94, 0.08);
+  --accent-red: #EF4444;
+  --accent-red-bg: rgba(239, 68, 68, 0.06);
+  --accent-blue: #3B82F6;
+  --accent-blue-bg: rgba(59, 130, 246, 0.06);
+  --accent-yellow: #F59E0B;
+  --accent-yellow-bg: rgba(245, 158, 11, 0.06);
+  --accent-purple: #8B5CF6;
+  --accent-purple-bg: rgba(139, 92, 246, 0.06);
+  --accent-cyan: #06B6D4;
+  --accent-cyan-bg: rgba(6, 182, 212, 0.06);
 
-  --shadow-sm: 0 1px 3px rgba(44, 32, 23, 0.05);
-  --shadow: 0 4px 20px rgba(44, 32, 23, 0.08);
-  --shadow-lg: 0 8px 40px rgba(44, 32, 23, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
   --radius: 12px;
   --radius-sm: 8px;
 }
@@ -144,7 +144,7 @@ body {
 }
 
 .upload-zone h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -167,7 +167,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-gold), var(--accent-terracotta));
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-green));
   border-radius: 2px;
   transition: width 0.3s;
   animation: shimmer 2s infinite;
@@ -233,19 +233,12 @@ body {
   opacity: 0.4;
 }
 
-.card-vendas { border-left: 3px solid var(--accent-green); }
 .card-vendas .value { color: var(--accent-green); }
-.card-despesas { border-left: 3px solid var(--accent-red); }
 .card-despesas .value { color: var(--accent-red); }
-.card-receitas { border-left: 3px solid var(--accent-blue); }
 .card-receitas .value { color: var(--accent-blue); }
-.card-estornos { border-left: 3px solid var(--accent-yellow); }
 .card-estornos .value { color: var(--accent-yellow); }
-.card-saldo-anterior { border-left: 3px solid var(--accent-purple); }
 .card-saldo-anterior .value { color: var(--accent-purple); }
-.card-saldo { border-left: 3px solid var(--accent-gold); }
 .card-saldo .value { color: var(--accent-gold); }
-.card-revisao { border-left: 3px solid var(--accent-terracotta); }
 .card-revisao .value { color: var(--accent-terracotta); }
 
 /* Section headers */
@@ -257,7 +250,7 @@ body {
 }
 
 .section-header h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
@@ -267,33 +260,14 @@ body {
 /* Filters */
 .filters {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
 
-.filters select,
-.filters input {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  font-size: 13px;
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color 0.2s;
-  box-shadow: var(--shadow-sm);
-}
-
-.filters select:focus,
-.filters input:focus {
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 0 3px var(--accent-gold-bg);
-}
-
-.filters select option {
-  background: var(--bg-card);
+.filters .form-group {
+  flex: 1;
+  min-width: 160px;
 }
 
 /* Table */
@@ -595,6 +569,7 @@ tr:hover td {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
@@ -662,7 +637,7 @@ tr:hover td {
 }
 
 .btn-danger:hover {
-  background: #9e3f37;
+  background: #dc2626;
   transform: translateY(-1px);
   box-shadow: var(--shadow);
 }
@@ -703,7 +678,7 @@ tr:hover td {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(44, 32, 23, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -742,7 +717,7 @@ tr:hover td {
 }
 
 .modal-header h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
@@ -915,7 +890,7 @@ tr:hover td {
 }
 
 .btn-save:hover {
-  background: #4a7d58;
+  background: #1a5c2e;
   transform: translateY(-1px);
   box-shadow: var(--shadow);
 }
@@ -941,8 +916,8 @@ tr:hover td {
 
 /* New entry button */
 .btn-new-entry {
-  background: var(--accent-gold);
-  border: 1px solid var(--accent-gold);
+  background: #1A1A1A;
+  border: 1px solid #1A1A1A;
   border-radius: var(--radius-sm);
   padding: 8px 20px;
   color: white;
@@ -955,7 +930,7 @@ tr:hover td {
 }
 
 .btn-new-entry:hover {
-  background: #b09060;
+  background: #333333;
   transform: translateY(-1px);
   box-shadow: var(--shadow);
 }
@@ -1066,7 +1041,7 @@ tr:hover td {
 
 /* Import result */
 .import-result h4 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 16px;
@@ -1130,7 +1105,7 @@ tr:hover td {
 
 /* Preview table */
 .import-preview h4 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 8px;
