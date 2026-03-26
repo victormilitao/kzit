@@ -310,7 +310,6 @@ table {
   width: 100%;
   min-width: 900px;
   border-collapse: collapse;
-  table-layout: fixed;
 }
 
 th {
@@ -629,6 +628,68 @@ tr:hover td {
   border-color: var(--accent-gold);
 }
 
+/* Delete button */
+.btn-delete {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  opacity: 1;
+  background: var(--accent-red-bg);
+  border-color: var(--accent-red);
+}
+
+/* Danger button (delete confirmation) */
+.btn-danger {
+  background: var(--accent-red);
+  border: 1px solid var(--accent-red);
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+  background: #9e3f37;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Delete modal details */
+.modal-confirm-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.modal-warning {
+  font-size: 13px;
+  color: var(--accent-red);
+  font-weight: 500;
+}
+
 /* Review row highlight */
 .row-needs-review td {
   background: var(--accent-terracotta-bg);
@@ -867,9 +928,16 @@ tr:hover td {
 }
 
 /* Origin badges */
-.badge-origin-whatsapp { background: rgba(37, 211, 102, 0.12); color: #25d366; font-size: 10px; text-transform: none; }
-.badge-origin-planilha { background: rgba(33, 150, 243, 0.12); color: #2196f3; font-size: 10px; text-transform: none; }
-.badge-origin-form { background: rgba(156, 142, 130, 0.12); color: var(--text-muted); font-size: 10px; text-transform: none; }
+.badge-origin-whatsapp,
+.badge-origin-planilha,
+.badge-origin-form {
+  font-size: 11px;
+  text-transform: none;
+  white-space: nowrap;
+}
+.badge-origin-whatsapp { background: rgba(37, 211, 102, 0.12); color: #25d366; }
+.badge-origin-planilha { background: rgba(33, 150, 243, 0.12); color: #2196f3; }
+.badge-origin-form { background: rgba(156, 142, 130, 0.12); color: var(--text-muted); }
 
 /* New entry button */
 .btn-new-entry {

@@ -55,9 +55,9 @@
     "delete": "Excluir lançamento"
   },
   "origin": {
-    "WHATSAPP": "📱 WhatsApp",
-    "PLANILHA": "📊 Planilha",
-    "FORM": "📝 Form"
+    "WHATSAPP": "WhatsApp",
+    "PLANILHA": "Planilha",
+    "FORM": "Manual"
   },
   "entryStatus": {
     "PENDENTE": "Pendente",

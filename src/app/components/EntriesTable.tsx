@@ -146,16 +146,16 @@ export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated }: E
         <table>
           <thead>
             <tr>
-              <th style={{ width: 160 }}>{t('date')}</th>
-              <th style={{ width: 130 }}>{t('type')}</th>
+              <th>{t('date')}</th>
+              <th>{t('type')}</th>
               <th>{t('description')}</th>
-              <th style={{ width: 100 }}>{t('client')}</th>
-              <th style={{ width: 100 }}>{t('product')}</th>
-              <th style={{ width: 100 }}>{t('responsible')}</th>
-              <th style={{ width: 90 }}>{t('value')}</th>
-              <th style={{ width: 100 }}>{t('payment')}</th>
-              <th style={{ width: 90 }}>{t('origin')}</th>
-              <th style={{ width: 80 }}></th>
+              <th>{t('client')}</th>
+              <th>{t('product')}</th>
+              <th>{t('responsible')}</th>
+              <th>{t('value')}</th>
+              <th>{t('payment')}</th>
+              <th>{t('origin')}</th>
+              <th style={{ width: 70 }}></th>
             </tr>
           </thead>
           <tbody>
