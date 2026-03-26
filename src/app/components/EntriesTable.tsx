@@ -7,6 +7,7 @@ import { EditEntryModal } from './EditEntryModal';
 import { CreateEntryModal } from './CreateEntryModal';
 import { DeleteEntryModal } from './DeleteEntryModal';
 import { FormField } from './FormField';
+import { Icon } from './Icon';
 
 interface EntryMessage {
   text: string;
@@ -37,9 +38,10 @@ interface EntriesTableProps {
   selectedUploadId: string | null;
   refreshKey: number;
   onEntryUpdated?: () => void;
+  onOpenImportModal: () => void;
 }
 
-export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated }: EntriesTableProps) {
+export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated, onOpenImportModal }: EntriesTableProps) {
   const t = useTranslations('entries');
   const tDashboard = useTranslations('dashboard');
   const tOrigin = useTranslations('origin');
@@ -114,10 +116,15 @@ export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated }: E
   return (
     <>
       <div className="section-header">
-        <h2>{tDashboard('entries')}</h2>
-        <button className="btn-new-entry" onClick={() => setShowCreateModal(true)}>
-          {tDashboard('newEntry')}
-        </button>
+        <h2><Icon name="ClipboardList" size={20} /> {tDashboard('entries')}</h2>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button className="btn-outline" onClick={onOpenImportModal}>
+            <Icon name="Download" size={16} /> Importação
+          </button>
+          <button className="btn-new-entry" onClick={() => setShowCreateModal(true)}>
+            <Icon name="Plus" size={16} /> {tDashboard('newEntry')}
+          </button>
+        </div>
       </div>
 
       <div className="filters">
@@ -226,14 +233,14 @@ export function EntriesTable({ selectedUploadId, refreshKey, onEntryUpdated }: E
                         onClick={() => setEditingEntry(e)}
                         title={t('edit')}
                       >
-                        ✏️
+                        <Icon name="Pencil" size={14} />
                       </button>
                       <button
                         className="btn-delete"
                         onClick={() => setDeletingEntry(e)}
                         title={t('delete')}
                       >
-                        🗑️
+                        <Icon name="Trash2" size={14} />
                       </button>
                     </div>
                   </td>

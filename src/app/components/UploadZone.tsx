@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useToast } from './Toast';
+import { Icon } from './Icon';
 
 interface UploadZoneProps {
   onUploadComplete: () => void;
@@ -74,10 +75,10 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
           setProgress(100);
 
           if (upload.status === 'DONE') {
-            setStatusText(`✅ Concluído! ${upload.processedMessages} mensagens processadas.`);
+            setStatusText(`Concluído! ${upload.processedMessages} mensagens processadas.`);
             showToast('Processamento concluído!');
           } else {
-            setStatusText('❌ Erro no processamento.');
+            setStatusText('Erro no processamento.');
             showToast('Erro no processamento', 'error');
           }
 
@@ -102,7 +103,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
         if (e.dataTransfer.files[0]) uploadFile(e.dataTransfer.files[0]);
       }}
     >
-      <span className="upload-icon">📄</span>
+      <span className="upload-icon"><Icon name="FileText" size={18} /></span>
       <h3>Arraste o arquivo .txt aqui</h3>
       <p>ou clique para selecionar — Exportação de conversa do WhatsApp</p>
       <input

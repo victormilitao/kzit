@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { FormField } from './FormField';
+import { Icon } from './Icon';
 
 interface EditEntryData {
   id: string;
@@ -42,6 +44,7 @@ const FORMAS_PAGAMENTO = [
 ];
 
 export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps) {
+  const t = useTranslations('editEntry');
   const [tipo, setTipo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [cliente, setCliente] = useState('');
@@ -110,13 +113,13 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>✏️ Editar Lançamento</h3>
+          <h3><Icon name="Pencil" size={18} /> {t('title')}</h3>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
         {entry.reviewReason && (
           <div className="modal-review-reason">
-            ⚠️ {entry.reviewReason}
+            <Icon name="TriangleAlert" size={14} /> {entry.reviewReason}
           </div>
         )}
 
@@ -224,10 +227,10 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
             Cancelar
           </button>
           <button className="btn-pending" onClick={() => handleSave(false)} disabled={saving}>
-            {saving ? 'Salvando...' : '⏳ Definir como pendente'}
+            {saving ? 'Salvando...' : t('setPending')}
           </button>
           <button className="btn-save" onClick={() => handleSave(true)} disabled={saving}>
-            {saving ? 'Salvando...' : '✓ Salvar e Resolver'}
+            {saving ? 'Salvando...' : t('saveAndResolve')}
           </button>
         </div>
       </div>

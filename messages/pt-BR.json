@@ -14,10 +14,10 @@
   },
   "dashboard": {
     "title": "Kzit — Dashboard Financeiro",
-    "financialSummary": "💰 Resumo Financeiro",
-    "entries": "📋 Lançamentos",
-    "newEntry": "+ Novo Lançamento",
-    "importSpreadsheet": "📥 Importar Planilha"
+    "financialSummary": "Resumo Financeiro",
+    "entries": "Lançamentos",
+    "newEntry": "Novo Lançamento",
+    "importSpreadsheet": "Importar Planilha"
   },
   "entries": {
     "date": "Data",
@@ -50,7 +50,7 @@
     "previous": "← Anterior",
     "next": "Próxima →",
     "entriesCount": "{count} lançamento(s)",
-    "review": "⚠️ Revisar",
+    "review": "Revisar",
     "edit": "Editar lançamento",
     "delete": "Excluir lançamento"
   },
@@ -74,7 +74,7 @@
     "transferencia": "Transferência"
   },
   "createEntry": {
-    "title": "➕ Novo Lançamento",
+    "title": "Novo Lançamento",
     "typeLabel": "Tipo",
     "valueLabel": "Valor (R$)",
     "descriptionLabel": "Descrição",
@@ -94,17 +94,17 @@
     "dueDateLabel": "Data de Vencimento",
     "paymentDateLabel": "Data de Pagamento",
     "statusLabel": "Situação",
-    "saveEntry": "✓ Salvar Lançamento",
+    "saveEntry": "Salvar Lançamento",
     "errorSaving": "Erro ao salvar"
   },
   "editEntry": {
-    "title": "✏️ Editar Lançamento",
-    "setPending": "⏳ Definir como pendente",
-    "saveAndResolve": "✓ Salvar e Resolver",
+    "title": "Editar Lançamento",
+    "setPending": "Definir como pendente",
+    "saveAndResolve": "Salvar e Resolver",
     "errorSaving": "Erro ao salvar"
   },
   "deleteEntry": {
-    "title": "🗑️ Excluir Lançamento",
+    "title": "Excluir Lançamento",
     "confirmMessage": "Tem certeza que deseja excluir este lançamento?",
     "warning": "Esta ação não pode ser desfeita.",
     "cancel": "Cancelar",
@@ -113,7 +113,7 @@
     "errorDeleting": "Erro ao excluir"
   },
   "importSpreadsheet": {
-    "title": "📥 Importar Planilha",
+    "title": "Importar Planilha",
     "dropzone": "Arraste um arquivo aqui ou clique para selecionar",
     "acceptedFormats": "Formatos aceitos: .csv, .xlsx, .xls",
     "responsibleLabel": "Responsável pela importação",

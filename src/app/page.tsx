@@ -4,11 +4,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { ToastProvider } from './components/Toast';
 import { Header } from './components/Header';
-import { UploadZone } from './components/UploadZone';
-import { UploadsList } from './components/UploadsList';
 import { SummaryCards } from './components/SummaryCards';
 import { EntriesTable } from './components/EntriesTable';
-import { ImportSpreadsheetModal } from './components/ImportSpreadsheetModal';
+import { ImportModal } from './components/ImportModal';
+import { Icon } from './components/Icon';
 
 interface SummaryData {
   totalVendas: number;
@@ -82,27 +81,24 @@ export default function DashboardPage() {
       <div className="container">
         <Header />
 
-        <div className="upload-actions">
-          <UploadZone onUploadComplete={loadAll} />
-          <button className="btn-import-spreadsheet" onClick={() => setShowImportModal(true)}>
-            {t('importSpreadsheet')}
-          </button>
-        </div>
-
-        <UploadsList uploads={uploads} />
-
         <div className="section-header">
-          <h2>{t('financialSummary')}</h2>
+          <h2><Icon name="Wallet" size={20} /> {t('financialSummary')}</h2>
         </div>
         <SummaryCards summary={summary} />
 
-        <EntriesTable selectedUploadId={null} refreshKey={refreshKey} onEntryUpdated={loadSummary} />
+        <EntriesTable 
+          selectedUploadId={null} 
+          refreshKey={refreshKey} 
+          onEntryUpdated={loadSummary} 
+          onOpenImportModal={() => setShowImportModal(true)} 
+        />
       </div>
 
-      <ImportSpreadsheetModal
+      <ImportModal
         open={showImportModal}
         onClose={() => setShowImportModal(false)}
-        onImported={loadAll}
+        onImportComplete={loadAll}
+        uploads={uploads}
       />
     </ToastProvider>
   );

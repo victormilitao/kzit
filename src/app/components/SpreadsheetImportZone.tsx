@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import * as XLSX from 'xlsx';
+import { Icon } from './Icon';
 
 interface ImportResult {
   totalRows: number;
@@ -11,9 +12,7 @@ interface ImportResult {
   errors: { row: number; reason: string }[];
 }
 
-interface ImportSpreadsheetModalProps {
-  open: boolean;
-  onClose: () => void;
+interface SpreadsheetImportZoneProps {
   onImported: () => void;
 }
 
@@ -29,20 +28,18 @@ function isAcceptedFile(f: File): boolean {
   return ACCEPTED_EXTENSIONS.includes(ext) || ACCEPTED_MIMES.includes(f.type);
 }
 
-export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpreadsheetModalProps) {
+export function SpreadsheetImportZone({ onImported }: SpreadsheetImportZoneProps) {
   const t = useTranslations('importSpreadsheet');
   const tCommon = useTranslations('common');
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string[][]>([]);
-  const [responsavel, setResponsavel] = useState('');
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<ImportResult | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (!open) return null;
 
   const parseCSVPreview = (text: string): string[][] => {
     const lines = text.trim().split(/\r?\n/).slice(0, 6); // header + 5 rows
@@ -102,13 +99,11 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
     }
   };
 
-  const handleClose = () => {
+  const resetState = () => {
     setFile(null);
     setPreview([]);
-    setResponsavel('');
     setError('');
     setResult(null);
-    onClose();
   };
 
   const handleImport = async () => {
@@ -123,7 +118,6 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('responsavel', responsavel.trim());
 
       const res = await fetch('/api/entries/import', {
         method: 'POST',
@@ -146,16 +140,10 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
   };
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content modal-wide" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{t('title')}</h3>
-          <button className="modal-close" onClick={handleClose}>×</button>
-        </div>
+    <div className="spreadsheet-import-zone">
+      {error && <div className="modal-error">{error}</div>}
 
-        {error && <div className="modal-error">{error}</div>}
-
-        <div className="modal-body">
+      <div className="zone-body">
           {result ? (
             <div className="import-result">
               <h4>{t('resultTitle')}</h4>
@@ -209,27 +197,17 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
                 />
                 {file ? (
                   <div className="dropzone-file">
-                    <span className="dropzone-icon">📄</span>
+                    <span className="dropzone-icon"><Icon name="FileText" size={28} /></span>
                     <span>{file.name}</span>
                     <span className="dropzone-size">({(file.size / 1024).toFixed(1)} KB)</span>
                   </div>
                 ) : (
                   <div className="dropzone-placeholder">
-                    <span className="dropzone-icon">📥</span>
+                    <span className="dropzone-icon"><Icon name="Download" size={28} /></span>
                     <p>{t('dropzone')}</p>
                     <small>{t('acceptedFormats')}</small>
                   </div>
                 )}
-              </div>
-
-              <div className="form-group">
-                <label>{t('responsibleLabel')}</label>
-                <input
-                  type="text"
-                  placeholder={t('responsiblePlaceholder')}
-                  value={responsavel}
-                  onChange={(e) => setResponsavel(e.target.value)}
-                />
               </div>
 
               {preview.length > 0 && (
@@ -259,37 +237,27 @@ export function ImportSpreadsheetModal({ open, onClose, onImported }: ImportSpre
               )}
             </>
           )}
-        </div>
+      </div>
 
-        <div className="modal-footer">
-          {result ? (
-            <>
-              <button className="btn-cancel" onClick={handleClose}>
-                {tCommon('close')}
-              </button>
-              <button className="btn-save" onClick={() => {
-                setResult(null);
-                setFile(null);
-                setPreview([]);
-              }}>
-                {t('importAnother')}
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="btn-cancel" onClick={handleClose} disabled={importing}>
-                {tCommon('cancel')}
-              </button>
-              <button
-                className="btn-save"
-                onClick={handleImport}
-                disabled={importing || !file}
-              >
-                {importing ? tCommon('loading') : t('import', { count: Math.max(preview.length - 1, 0) })}
-              </button>
-            </>
-          )}
-        </div>
+      <div className="zone-footer" style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+        {result ? (
+          <button className="btn-save" onClick={resetState}>
+            {t('importAnother')}
+          </button>
+        ) : (
+          <>
+            <button className="btn-cancel" onClick={resetState} disabled={importing || !file}>
+              {tCommon('cancel')}
+            </button>
+            <button
+              className="btn-save"
+              onClick={handleImport}
+              disabled={importing || !file}
+            >
+              {importing ? tCommon('loading') : t('import', { count: Math.max(preview.length - 1, 0) })}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
