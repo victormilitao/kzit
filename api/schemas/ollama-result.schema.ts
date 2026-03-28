@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ollamaResultSchema = z.object({
-  tipo: z.enum(['venda', 'despesa', 'receita', 'estorno', 'saldo_anterior', 'desconhecido']),
+  tipo: z.enum(['venda', 'despesa', 'compra', 'receita', 'estorno', 'saldo_anterior', 'desconhecido']),
   cliente: z.string().nullable().default(null),
   produto: z.string().nullable().default(null),
   descricao: z.string().nullable().default(null),

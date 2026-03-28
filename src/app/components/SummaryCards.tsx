@@ -1,11 +1,12 @@
 'use client';
 
 import { formatCurrency } from '../utils';
-import { Icon, type IconName } from './Icon';
+import { Icon } from './Icon';
 
 interface SummaryData {
   totalVendas: number;
   totalDespesas: number;
+  totalCompras: number;
   totalReceitas: number;
   totalEstornos: number;
   saldoAnterior: number;
@@ -14,32 +15,31 @@ interface SummaryData {
 }
 
 interface SummaryCardsProps {
-  summary: SummaryData;
+  caixa: SummaryData;
 }
 
-const cards: { key: keyof SummaryData; label: string; icon: IconName; cls: string }[] = [
-  { key: 'saldoAnterior', label: 'Saldo Anterior', icon: 'Landmark', cls: 'card-saldo-anterior' },
-  { key: 'totalVendas', label: 'Vendas', icon: 'ShoppingBag', cls: 'card-vendas' },
-  { key: 'totalDespesas', label: 'Despesas', icon: 'TrendingDown', cls: 'card-despesas' },
-  { key: 'totalReceitas', label: 'Receitas', icon: 'TrendingUp', cls: 'card-receitas' },
-  { key: 'totalEstornos', label: 'Estornos', icon: 'Undo2', cls: 'card-estornos' },
-  { key: 'saldo', label: 'Saldo', icon: 'ChartNoAxesColumn', cls: 'card-saldo' },
-];
-
-export function SummaryCards({ summary }: SummaryCardsProps) {
+export function SummaryCards({ caixa }: SummaryCardsProps) {
   return (
-    <div className="summary-grid">
-      {cards.map((c) => (
-        <div key={c.key} className={`summary-card ${c.cls}`}>
-          <span className="icon"><Icon name={c.icon} size={20} /></span>
-          <div className="label">{c.label}</div>
-          <div className="value">{formatCurrency(summary[c.key])}</div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div className="summary-section">
+        <h3 style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '12px' }}>Resumo Financeiro</h3>
+        <div className="summary-grid">
+          <div className="summary-card card-receitas">
+            <span className="icon"><Icon name="TrendingUp" size={20} /></span>
+            <div className="label">Entradas Recebidas</div>
+            <div className="value">{formatCurrency(caixa.saldoAnterior + caixa.totalVendas + caixa.totalReceitas)}</div>
+          </div>
+          <div className="summary-card card-despesas">
+            <span className="icon"><Icon name="TrendingDown" size={20} /></span>
+            <div className="label">Saídas (Despesas/Compras/Estornos)</div>
+            <div className="value">{formatCurrency(caixa.totalDespesas + caixa.totalCompras)}</div>
+          </div>
+          <div className="summary-card card-saldo">
+            <span className="icon"><Icon name="Wallet" size={20} /></span>
+            <div className="label">Saldo em Conta</div>
+            <div className="value">{formatCurrency(caixa.saldoAnterior + caixa.totalVendas + caixa.totalReceitas - caixa.totalDespesas - caixa.totalCompras)}</div>
+          </div>
         </div>
-      ))}
-      <div className="summary-card card-revisao">
-        <span className="icon"><Icon name="Eye" size={20} /></span>
-        <div className="label">Pendentes Revisão</div>
-        <div className="value">{summary.pendentesRevisao}</div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { FormField } from './FormField';
 import { Icon } from './Icon';
+import { CurrencyInput, floatToCents, centsToFloat } from './CurrencyInput';
 
 interface EditEntryData {
   id: string;
@@ -16,6 +17,7 @@ interface EditEntryData {
   parcelas: number | null;
   observacoes: string | null;
   reviewReason: string | null;
+  isTransaction?: boolean;
 }
 
 interface EditEntryModalProps {
@@ -23,15 +25,6 @@ interface EditEntryModalProps {
   onClose: () => void;
   onSaved: () => void;
 }
-
-const TIPOS = [
-  { value: 'VENDA', label: 'Venda' },
-  { value: 'DESPESA', label: 'Despesa' },
-  { value: 'RECEITA', label: 'Receita' },
-  { value: 'ESTORNO', label: 'Estorno' },
-  { value: 'SALDO_ANTERIOR', label: 'Saldo Anterior' },
-  { value: 'DESCONHECIDO', label: 'Desconhecido' },
-];
 
 const FORMAS_PAGAMENTO = [
   { value: '', label: '— Não informado —' },
@@ -45,11 +38,12 @@ const FORMAS_PAGAMENTO = [
 
 export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps) {
   const t = useTranslations('editEntry');
+  const tEntries = useTranslations('entries');
   const [tipo, setTipo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [cliente, setCliente] = useState('');
   const [produto, setProduto] = useState('');
-  const [valor, setValor] = useState('');
+  const [valorCents, setValorCents] = useState(0);
   const [formaPagamento, setFormaPagamento] = useState('');
   const [parcelas, setParcelas] = useState('');
   const [observacoes, setObservacoes] = useState('');
@@ -62,8 +56,23 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
       setDescricao(entry.descricao || '');
       setCliente(entry.cliente || '');
       setProduto(entry.produto || '');
-      setValor(entry.valor != null ? String(entry.valor) : '');
-      setFormaPagamento(entry.formaPagamento || '');
+      setValorCents(floatToCents(entry.valor));
+      
+      let fp = entry.formaPagamento || '';
+      const fpLower = fp.toLowerCase();
+      if (fpLower.includes('cartao') || fpLower.includes('cartão')) {
+        fp = fpLower.includes('deb') || fpLower.includes('déb') ? 'cartao_debito' : 'cartao_credito';
+      } else if (fpLower.includes('pix')) {
+        fp = 'pix';
+      } else if (fpLower.includes('especie') || fpLower.includes('espécie') || fpLower.includes('dinheiro')) {
+        fp = 'dinheiro';
+      } else if (fpLower.includes('transf') || fpLower.includes('deposito')) {
+        fp = 'transferencia';
+      } else if (fpLower.includes('boleto')) {
+        fp = 'boleto';
+      }
+      setFormaPagamento(fp);
+
       setParcelas(entry.parcelas != null ? String(entry.parcelas) : '');
       setObservacoes(entry.observacoes || '');
       setError('');
@@ -77,19 +86,28 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
     setError('');
 
     try {
+      const isImediato = formaPagamento === 'pix' || formaPagamento === 'dinheiro' || formaPagamento === 'espécie' || formaPagamento === 'especie';
       const body: Record<string, unknown> = {
         tipo,
         descricao: descricao || null,
         cliente: cliente || null,
         produto: produto || null,
-        valor: valor ? parseFloat(valor) : null,
+        valor: centsToFloat(valorCents),
         formaPagamento: formaPagamento || null,
         parcelas: parcelas ? parseInt(parcelas, 10) : null,
         observacoes: observacoes || null,
         needsReview: !resolve,
       };
 
-      const res = await fetch(`/api/entries/${entry.id}`, {
+      if (isImediato) {
+        body.entryStatus = 'PAGO';
+        body.dataPagamento = new Date().toISOString(); 
+      }
+
+      const endpoint = entry.isTransaction 
+        ? `/api/transactions/${entry.id}` 
+        : `/api/entries/${entry.id}`;
+      const res = await fetch(endpoint, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -108,6 +126,16 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
       setSaving(false);
     }
   };
+
+  const currentTipos = [
+    { value: 'VENDA', label: tEntries('sales') },
+    { value: 'RECEITA', label: tEntries('revenues') },
+    { value: 'DESPESA', label: tEntries('expenses') },
+    { value: 'COMPRA', label: tEntries('purchases') },
+    { value: 'ESTORNO', label: tEntries('chargebacks') },
+    { value: 'SALDO_ANTERIOR', label: tEntries('previousBalance') },
+    { value: 'DESCONHECIDO', label: tEntries('unknown') }
+  ];
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -132,21 +160,17 @@ export function EditEntryModal({ entry, onClose, onSaved }: EditEntryModalProps)
               label="Tipo"
               selectProps={{ value: tipo, onChange: (e) => setTipo(e.target.value) }}
             >
-              {TIPOS.map((t) => (
+              {currentTipos.map((t) => (
                 <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </FormField>
-            <FormField
-              label="Valor (R$)"
-              inputProps={{
-                type: 'number',
-                step: '0.01',
-                min: '0',
-                placeholder: '0,00',
-                value: valor,
-                onChange: (e) => setValor(e.target.value),
-              }}
-            />
+            <div className="form-group">
+              <label>Valor (R$)</label>
+              <CurrencyInput
+                value={valorCents}
+                onChange={setValorCents}
+              />
+            </div>
           </div>
 
           <FormField

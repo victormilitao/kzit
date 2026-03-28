@@ -52,7 +52,7 @@ export const messageRepository = {
         skip,
         take: limit,
         orderBy: { timestamp: 'desc' },
-        include: { entry: true },
+        include: { transaction: { include: { entries: true } } },
       }),
       prisma.message.count({ where }),
     ]);

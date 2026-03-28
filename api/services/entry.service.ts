@@ -32,8 +32,8 @@ export const entryService = {
       formaPagamento: data.formaPagamento,
       observacoes: data.observacoes,
       responsavel: data.responsavel,
-      dataVencimento: data.dataVencimento ? new Date(data.dataVencimento) : null,
-      dataPagamento: data.dataPagamento ? new Date(data.dataPagamento) : null,
+      dataVencimento: data.dataVencimento ? new Date(data.dataVencimento.includes('T') ? data.dataVencimento : data.dataVencimento + 'T12:00:00Z') : null,
+      dataPagamento: data.dataPagamento ? new Date(data.dataPagamento.includes('T') ? data.dataPagamento : data.dataPagamento + 'T12:00:00Z') : null,
       entryStatus: (data.entryStatus as EntryStatus) || 'PENDENTE',
     };
     return entryRepository.createManual(input);
@@ -114,12 +114,12 @@ export const entryService = {
       updateData.reviewReason = null;
     }
 
-    // Convert date strings to Date objects
+    // Convert date strings to Date objects safely
     if (data.dataVencimento !== undefined) {
-      updateData.dataVencimento = data.dataVencimento ? new Date(data.dataVencimento) : null;
+      updateData.dataVencimento = data.dataVencimento ? new Date(data.dataVencimento.includes('T') ? data.dataVencimento : data.dataVencimento + 'T12:00:00Z') : null;
     }
     if (data.dataPagamento !== undefined) {
-      updateData.dataPagamento = data.dataPagamento ? new Date(data.dataPagamento) : null;
+      updateData.dataPagamento = data.dataPagamento ? new Date(data.dataPagamento.includes('T') ? data.dataPagamento : data.dataPagamento + 'T12:00:00Z') : null;
     }
     if (data.entryStatus !== undefined) {
       updateData.entryStatus = data.entryStatus as EntryStatus;

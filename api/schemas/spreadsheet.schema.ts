@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const spreadsheetRowSchema = z.object({
   id: z.string().min(1),
-  tipo: z.enum(['receita', 'despesa']),
+  tipo: z.enum(['receita', 'despesa', 'compra']),
   descricao: z.string().optional().default(''),
   categoria: z.string().optional().default(''),
   valor: z.number(),

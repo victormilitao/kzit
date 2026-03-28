@@ -5,11 +5,12 @@ import { OllamaResult } from '../types';
 const SYSTEM_PROMPT = `Extraia dados financeiros de mensagens de WhatsApp de responsáveis de loja. Retorne APENAS JSON.
 
 Campos do JSON:
-{"tipo":"venda|despesa|receita|estorno|saldo_anterior|desconhecido","cliente":null,"produto":null,"descricao":"resumo","valor":null,"parcelas":null,"forma_pagamento":null,"observacoes":null,"confianca":0.9,"incompleto":false,"campos_faltando":null}
+{"tipo":"venda|despesa|compra|receita|estorno|saldo_anterior|desconhecido","cliente":null,"produto":null,"descricao":"resumo","valor":null,"parcelas":null,"forma_pagamento":"pix|dinheiro|cartao_credito|cartao_debito|boleto|transferencia|null","observacoes":null,"confianca":0.9,"incompleto":false,"campos_faltando":null}
 
 Tipos:
 - "venda": venda de produto (ex: "vendi calça pra Ana por 290 3x cartão")
-- "despesa": gasto da loja (ex: "despesa: embalagem 25 pix", "gastei 40 motoboy", "pago costureira 150")
+- "despesa": gasto operacional da loja (ex: "despesa: uber 25 pix", "paguei conta de luz 200", "gastei 40 motoboy", "pago costureira 150")
+- "compra": compra de produto/material/insumo para a loja (ex: "comprei tecido 300", "compra: linha e botão 50", "comprei embalagem 25 pix")
 - "receita": entrada de dinheiro que NÃO é venda (ex: "recebimento 200 pix", "sinal cliente Rosa 200", "entrada pagamento Joana 100", "recebimento: pago em espécie 200")
 - "estorno": devolução/cancelamento (ex: "estorno venda da Carla 320")
 - "saldo_anterior": saldo inicial (ex: "saldo anterior 5000", "saldo inicial 3200")
@@ -21,9 +22,12 @@ Regras:
 - Se falta info essencial (venda sem cliente/valor, despesa sem valor), marque incompleto:true e campos_faltando:["campo1"]
 - Tolerar erros de digitação e abreviações
 - Mensagens com "vendi/venda/vendido" = tipo "venda"
-- Mensagens com "despesa/gastei" = tipo "despesa"
+- Mensagens com "despesa/gastei" referente a serviço/operacional = tipo "despesa"
+- Mensagens com "comprei/compra" referente a produto/material/insumo = tipo "compra"
 - Mensagens com "recebimento/recebido/receber/parcela recebida" = tipo "receita" (PRIORIDADE sobre regras de despesa)
 - ATENÇÃO: "pago" ou "paguei" dentro de contexto de "recebimento" significa que o CLIENTE pagou, portanto é "receita", NÃO "despesa". Só classifique como "despesa" quando "pago/paguei" indica um GASTO da loja (ex: "paguei o motoboy", "pago costureira")
+- ATENÇÃO: diferencie "compra" de "despesa": "compra" é aquisição de produto/material/insumo (tecido, embalagem, matéria-prima), "despesa" é gasto operacional/serviço (uber, luz, internet, frete, costureira)
+- forma_pagamento: DEVE ser EXATAMENTE um dos seguintes valores: "pix", "dinheiro", "cartao_credito", "cartao_debito", "boleto", "transferencia" ou null. Se mencionar apenas "cartão", assuma "cartao_credito". Se mencionar "espécie", assuma "dinheiro".
 - confianca: 0.8-1.0 se claro, 0.4-0.7 se ambíguo
 
 Responda APENAS o JSON.`;

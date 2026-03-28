@@ -2,13 +2,14 @@ import { z } from 'zod';
 
 export const entryQuerySchema = z.object({
   tipo: z
-    .enum(['VENDA', 'DESPESA', 'RECEITA', 'ESTORNO', 'DESCONHECIDO'])
+    .enum(['VENDA', 'DESPESA', 'COMPRA', 'RECEITA', 'ESTORNO', 'DESCONHECIDO'])
     .optional(),
   responsavel: z.string().optional(),
   needsReview: z
-    .string()
-    .transform((val) => val === 'true')
-    .optional(),
+    .preprocess(
+      (val) => (val === '' || val === undefined ? undefined : val === 'true'),
+      z.boolean().optional(),
+    ),
   uploadId: z.string().uuid().optional(),
   startDate: z
     .string()
@@ -77,7 +78,7 @@ export type SummaryQueryInput = z.infer<typeof summaryQuerySchema>;
 
 export const entryUpdateSchema = z.object({
   tipo: z
-    .enum(['VENDA', 'DESPESA', 'RECEITA', 'ESTORNO', 'SALDO_ANTERIOR', 'DESCONHECIDO'])
+    .enum(['VENDA', 'DESPESA', 'COMPRA', 'RECEITA', 'ESTORNO', 'SALDO_ANTERIOR', 'DESCONHECIDO'])
     .optional(),
   cliente: z.string().nullable().optional(),
   produto: z.string().nullable().optional(),
@@ -94,7 +95,7 @@ export const entryUpdateSchema = z.object({
 });
 
 export const entryCreateSchema = z.object({
-  tipo: z.enum(['VENDA', 'DESPESA', 'RECEITA', 'ESTORNO', 'SALDO_ANTERIOR']),
+  tipo: z.enum(['VENDA', 'DESPESA', 'COMPRA', 'RECEITA', 'ESTORNO', 'SALDO_ANTERIOR']),
   descricao: z.string().nullable().optional(),
   categoria: z.string().nullable().optional(),
   cliente: z.string().nullable().optional(),

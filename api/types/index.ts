@@ -7,7 +7,7 @@ export interface ParsedMessage {
 }
 
 export interface OllamaResult {
-  tipo: 'venda' | 'despesa' | 'receita' | 'estorno' | 'saldo_anterior' | 'desconhecido';
+  tipo: 'venda' | 'despesa' | 'compra' | 'receita' | 'estorno' | 'saldo_anterior' | 'desconhecido';
   cliente: string | null;
   produto: string | null;
   descricao: string | null;
@@ -53,6 +53,7 @@ export interface MessageFilters {
 export interface SummaryResult {
   totalVendas: number;
   totalDespesas: number;
+  totalCompras: number;
   totalReceitas: number;
   totalEstornos: number;
   saldoAnterior: number;

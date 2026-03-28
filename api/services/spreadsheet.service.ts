@@ -77,6 +77,7 @@ export const spreadsheetService = {
       const rawStatus = (cells[7] || '').toLowerCase();
       const rawFormaPagamento = cells[8] || '';
       const rawObservacoes = cells[9] || '';
+      const rawParcelas = cells[10] || '';
 
       // Skip lines without id or valor
       if (!rawId || !rawValor) {
@@ -91,13 +92,14 @@ export const spreadsheetService = {
       }
 
       // Validate tipo
-      if (rawTipo !== 'receita' && rawTipo !== 'despesa') {
-        errors.push({ row: rowNumber, reason: `Tipo inválido: "${rawTipo}". Esperado: receita ou despesa` });
+      if (rawTipo !== 'receita' && rawTipo !== 'despesa' && rawTipo !== 'compra') {
+        errors.push({ row: rowNumber, reason: `Tipo inválido: "${rawTipo}". Esperado: receita, despesa ou compra` });
         continue;
       }
 
       // Map tipo
-      const tipo: EntryType = rawTipo === 'receita' ? 'RECEITA' : 'DESPESA';
+      const tipoMap: Record<string, EntryType> = { receita: 'RECEITA', despesa: 'DESPESA', compra: 'COMPRA' };
+      const tipo: EntryType = tipoMap[rawTipo];
 
       // Apply value sign rule
       const finalValor = Math.abs(valor);
@@ -108,7 +110,7 @@ export const spreadsheetService = {
       let dataPagamento: Date | null = null;
 
       if (rawDataVencimento) {
-        dataVencimento = new Date(rawDataVencimento + 'T00:00:00');
+        dataVencimento = new Date(rawDataVencimento + 'T12:00:00Z');
         if (isNaN(dataVencimento.getTime())) {
           errors.push({ row: rowNumber, reason: `Data de vencimento inválida: "${rawDataVencimento}"` });
           continue;
@@ -116,7 +118,7 @@ export const spreadsheetService = {
       }
 
       if (rawDataPagamento) {
-        dataPagamento = new Date(rawDataPagamento + 'T00:00:00');
+        dataPagamento = new Date(rawDataPagamento + 'T12:00:00Z');
         if (isNaN(dataPagamento.getTime())) {
           errors.push({ row: rowNumber, reason: `Data de pagamento inválida: "${rawDataPagamento}"` });
           continue;
@@ -136,12 +138,21 @@ export const spreadsheetService = {
         entryStatus = 'PENDENTE';
       }
 
+      let parcelas = 1;
+      if (rawParcelas) {
+        const p = parseInt(rawParcelas, 10);
+        if (!isNaN(p) && p > 0) {
+          parcelas = p;
+        }
+      }
+
       entries.push({
         tipo,
         origin: 'PLANILHA' as EntryOrigin,
         descricao: rawDescricao || null,
         categoria: rawCategoria || null,
         valor: finalValor,
+        parcelas,
         formaPagamento: rawFormaPagamento || null,
         observacoes: rawObservacoes || null,
         responsavel,

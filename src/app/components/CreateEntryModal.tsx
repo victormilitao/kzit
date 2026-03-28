@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { FormField } from './FormField';
+import { CurrencyInput, centsToFloat } from './CurrencyInput';
 
 interface CreateEntryModalProps {
   open: boolean;
@@ -12,16 +13,17 @@ interface CreateEntryModalProps {
 
 export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalProps) {
   const t = useTranslations('createEntry');
+  const tEntries = useTranslations('entries');
   const tCommon = useTranslations('common');
   const tPay = useTranslations('paymentMethods');
   const tStatus = useTranslations('entryStatus');
 
-  const [tipo, setTipo] = useState('VENDA');
+  const [tipo, setTipo] = useState('RECEITA');
   const [descricao, setDescricao] = useState('');
   const [categoria, setCategoria] = useState('');
   const [cliente, setCliente] = useState('');
   const [produto, setProduto] = useState('');
-  const [valor, setValor] = useState('');
+  const [valorCents, setValorCents] = useState(0);
   const [formaPagamento, setFormaPagamento] = useState('');
   const [parcelas, setParcelas] = useState('');
   const [responsavel, setResponsavel] = useState('');
@@ -35,12 +37,12 @@ export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalP
   if (!open) return null;
 
   const resetForm = () => {
-    setTipo('VENDA');
+    setTipo('RECEITA');
     setDescricao('');
     setCategoria('');
     setCliente('');
     setProduto('');
-    setValor('');
+    setValorCents(0);
     setFormaPagamento('');
     setParcelas('');
     setResponsavel('');
@@ -72,7 +74,7 @@ export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalP
         categoria: categoria || null,
         cliente: cliente || null,
         produto: produto || null,
-        valor: valor ? parseFloat(valor) : null,
+        valor: centsToFloat(valorCents),
         formaPagamento: formaPagamento || null,
         parcelas: parcelas ? parseInt(parcelas, 10) : null,
         responsavel: responsavel.trim(),
@@ -103,11 +105,12 @@ export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalP
   };
 
   const TIPOS = [
-    { value: 'VENDA', label: 'Venda' },
-    { value: 'DESPESA', label: 'Despesa' },
-    { value: 'RECEITA', label: 'Receita' },
-    { value: 'ESTORNO', label: 'Estorno' },
-    { value: 'SALDO_ANTERIOR', label: 'Saldo Anterior' },
+    { value: 'VENDA', label: tEntries('sales') },
+    { value: 'RECEITA', label: tEntries('revenues') },
+    { value: 'DESPESA', label: tEntries('expenses') },
+    { value: 'COMPRA', label: tEntries('purchases') },
+    { value: 'ESTORNO', label: tEntries('chargebacks') },
+    { value: 'SALDO_ANTERIOR', label: tEntries('previousBalance') },
   ];
 
   const FORMAS_PAGAMENTO = [
@@ -141,17 +144,13 @@ export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalP
                 <option key={tp.value} value={tp.value}>{tp.label}</option>
               ))}
             </FormField>
-            <FormField
-              label={t('valueLabel')}
-              inputProps={{
-                type: 'number',
-                step: '0.01',
-                min: '0',
-                placeholder: '0,00',
-                value: valor,
-                onChange: (e) => setValor(e.target.value),
-              }}
-            />
+            <div className="form-group">
+              {<label>{t('valueLabel')}</label>}
+              <CurrencyInput
+                value={valorCents}
+                onChange={setValorCents}
+              />
+            </div>
           </div>
 
           <FormField
@@ -215,8 +214,13 @@ export function CreateEntryModal({ open, onClose, onCreated }: CreateEntryModalP
               selectProps={{
                 value: formaPagamento,
                 onChange: (e) => {
-                  setFormaPagamento(e.target.value);
-                  if (e.target.value !== 'cartao_credito') setParcelas('');
+                  const val = e.target.value;
+                  setFormaPagamento(val);
+                  if (val !== 'cartao_credito') setParcelas('');
+                  if (val === 'pix' || val === 'dinheiro') {
+                    setEntryStatus('PAGO');
+                    setDataPagamento(new Date().toISOString().split('T')[0]);
+                  }
                 },
               }}
             >

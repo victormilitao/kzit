@@ -11,6 +11,7 @@ function mapTypeToEnum(tipo: string): EntryType {
   const mapping: Record<string, EntryType> = {
     venda: 'VENDA',
     despesa: 'DESPESA',
+    compra: 'COMPRA',
     receita: 'RECEITA',
     estorno: 'ESTORNO',
     saldo_anterior: 'SALDO_ANTERIOR',

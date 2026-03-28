@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { uploadController } from '../controllers/upload.controller';
 import { entryController } from '../controllers/entry.controller';
+import { transactionController } from '../controllers/transaction.controller';
 import { messageController } from '../controllers/message.controller';
 
 const router = Router();
@@ -41,6 +42,13 @@ router.get('/entries', entryController.listEntries);
 router.get('/entries/summary', entryController.getSummary);
 router.patch('/entries/:id', entryController.updateEntry);
 router.delete('/entries/:id', entryController.deleteEntry);
+
+// Faturamento (Transactions)
+router.get('/transactions', transactionController.listTransactions);
+router.get('/transactions/summary', transactionController.getSummary);
+router.patch('/transactions/:id', transactionController.updateTransaction);
+router.delete('/transactions/:id', transactionController.deleteTransaction);
+
 
 // Mensagens
 router.get('/messages', messageController.listMessages);

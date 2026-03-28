@@ -13,3 +13,12 @@ export function formatDate(d: string | null | undefined): string {
     minute: '2-digit',
   });
 }
+
+export function formatDateOnly(d: string | null | undefined): string {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  });
+}

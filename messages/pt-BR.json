@@ -17,7 +17,14 @@
     "financialSummary": "Resumo Financeiro",
     "entries": "Lançamentos",
     "newEntry": "Novo Lançamento",
-    "importSpreadsheet": "Importar Planilha"
+    "importSpreadsheet": "Importar Planilha",
+    "faturamentoView": "Visão Faturamento",
+    "caixaView": "Visão de Caixa",
+    "filterByMonth": "Filtrar por período",
+    "month": "Mês",
+    "year": "Ano",
+    "allMonths": "Todos",
+    "allYears": "Todos"
   },
   "entries": {
     "date": "Data",
@@ -38,6 +45,7 @@
     "allTypes": "Todos os tipos",
     "sales": "Vendas",
     "expenses": "Despesas",
+    "purchases": "Compras",
     "revenues": "Receitas",
     "chargebacks": "Estornos",
     "previousBalance": "Saldo Anterior",
@@ -52,7 +60,15 @@
     "entriesCount": "{count} lançamento(s)",
     "review": "Revisar",
     "edit": "Editar lançamento",
-    "delete": "Excluir lançamento"
+    "delete": "Excluir lançamento",
+    "viewInstallments": "Ver parcelas",
+    "hideInstallments": "Ocultar parcelas",
+    "installmentsTitle": "Parcelas",
+    "installmentNumber": "Parcela",
+    "installmentDueDate": "Vencimento",
+    "markAsPaid": "Marcar como pago",
+    "markAsPending": "Marcar como pendente",
+    "actions": "Ações"
   },
   "origin": {
     "WHATSAPP": "WhatsApp",

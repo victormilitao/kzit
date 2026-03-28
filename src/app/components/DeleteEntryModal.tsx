@@ -9,6 +9,7 @@ interface DeleteEntryData {
   tipo: string;
   descricao: string | null;
   valor: number | null;
+  isTransaction?: boolean;
 }
 
 interface DeleteEntryModalProps {
@@ -29,7 +30,8 @@ export function DeleteEntryModal({ entry, onClose, onDeleted }: DeleteEntryModal
     setError('');
 
     try {
-      const res = await fetch(`/api/entries/${entry.id}`, {
+      const endpoint = entry.isTransaction ? `/api/transactions/${entry.id}` : `/api/entries/${entry.id}`;
+      const res = await fetch(endpoint, {
         method: 'DELETE',
       });
 
